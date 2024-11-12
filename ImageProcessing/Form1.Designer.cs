@@ -32,6 +32,9 @@
             saveFileDialog1 = new SaveFileDialog();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
+            trackBar3 = new TrackBar();
+            trackBar2 = new TrackBar();
+            trackBar1 = new TrackBar();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
             menuStrip1 = new MenuStrip();
@@ -48,6 +51,7 @@
             histogramToolStripMenuItem = new ToolStripMenuItem();
             sepiaToolStripMenuItem = new ToolStripMenuItem();
             tabPage2 = new TabPage();
+            comboBox2 = new ComboBox();
             checkBox1 = new CheckBox();
             comboBox1 = new ComboBox();
             pictureBox6 = new PictureBox();
@@ -63,6 +67,9 @@
             colorDialog1 = new ColorDialog();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             menuStrip1.SuspendLayout();
@@ -90,36 +97,72 @@
             tabControl1.Location = new Point(12, 12);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(963, 492);
+            tabControl1.Size = new Size(992, 563);
             tabControl1.TabIndex = 3;
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(trackBar3);
+            tabPage1.Controls.Add(trackBar2);
+            tabPage1.Controls.Add(trackBar1);
             tabPage1.Controls.Add(pictureBox2);
             tabPage1.Controls.Add(pictureBox1);
             tabPage1.Controls.Add(menuStrip1);
             tabPage1.Location = new Point(4, 29);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(955, 459);
+            tabPage1.Size = new Size(984, 530);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Part 1";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // trackBar3
+            // 
+            trackBar3.Location = new Point(503, 61);
+            trackBar3.Maximum = 50;
+            trackBar3.Minimum = -50;
+            trackBar3.Name = "trackBar3";
+            trackBar3.Size = new Size(202, 56);
+            trackBar3.TabIndex = 8;
+            trackBar3.TickFrequency = 5;
+            trackBar3.Scroll += trackBar3_Scroll;
+            // 
+            // trackBar2
+            // 
+            trackBar2.Location = new Point(276, 61);
+            trackBar2.Maximum = 50;
+            trackBar2.Minimum = -50;
+            trackBar2.Name = "trackBar2";
+            trackBar2.Size = new Size(202, 56);
+            trackBar2.TabIndex = 7;
+            trackBar2.TickFrequency = 5;
+            trackBar2.Scroll += trackBar2_Scroll;
+            // 
+            // trackBar1
+            // 
+            trackBar1.Location = new Point(47, 61);
+            trackBar1.Maximum = 50;
+            trackBar1.Minimum = -50;
+            trackBar1.Name = "trackBar1";
+            trackBar1.Size = new Size(202, 56);
+            trackBar1.TabIndex = 6;
+            trackBar1.TickFrequency = 5;
+            trackBar1.Scroll += trackBar1_Scroll;
+            // 
             // pictureBox2
             // 
-            pictureBox2.Location = new Point(484, 43);
+            pictureBox2.Location = new Point(545, 135);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(450, 400);
+            pictureBox2.Size = new Size(397, 378);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox2.TabIndex = 5;
             pictureBox2.TabStop = false;
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(17, 43);
+            pictureBox1.Location = new Point(47, 135);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(450, 400);
+            pictureBox1.Size = new Size(397, 378);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
@@ -130,7 +173,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, dIPToolStripMenuItem });
             menuStrip1.Location = new Point(3, 3);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(949, 28);
+            menuStrip1.Size = new Size(978, 28);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -144,14 +187,14 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(224, 26);
+            openToolStripMenuItem.Size = new Size(128, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(224, 26);
+            saveToolStripMenuItem.Size = new Size(128, 26);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
@@ -220,6 +263,7 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(comboBox2);
             tabPage2.Controls.Add(checkBox1);
             tabPage2.Controls.Add(comboBox1);
             tabPage2.Controls.Add(pictureBox6);
@@ -233,10 +277,19 @@
             tabPage2.Location = new Point(4, 29);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(955, 459);
+            tabPage2.Size = new Size(984, 530);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Part 2";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // comboBox2
+            // 
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Location = new Point(668, 409);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(226, 28);
+            comboBox2.TabIndex = 11;
+            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
             // checkBox1
             // 
@@ -347,13 +400,16 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(987, 516);
+            ClientSize = new Size(1016, 587);
             Controls.Add(tabControl1);
             Name = "Form1";
             Text = "Form1";
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             menuStrip1.ResumeLayout(false);
@@ -401,5 +457,9 @@
         private PictureBox pictureBox6;
         private ComboBox comboBox1;
         private CheckBox checkBox1;
+        private TrackBar trackBar1;
+        private TrackBar trackBar3;
+        private TrackBar trackBar2;
+        private ComboBox comboBox2;
     }
 }

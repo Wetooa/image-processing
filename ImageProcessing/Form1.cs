@@ -1,5 +1,7 @@
+using System.DirectoryServices;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq.Expressions;
 using AForge.Video;
 using AForge.Video.DirectShow;
 
@@ -8,26 +10,55 @@ namespace ImageProcessing
     public partial class Form1 : Form
     {
         Bitmap loaded, processed;
+        BasicDIP dip;
 
         FilterInfoCollection fic;
         VideoCaptureDevice vcd;
 
+        Bitmap imageA, imageB, subtractRes, vfxRes;
+
+        int videoEffectsIndex = 0;
+        String[] videoEffects =
+        {
+            "Subtract",
+            "Pixel Copy",
+            "GrayScale",
+            "Luminence GrayScale",
+            "Invert",
+            "Mirror Horizontal",
+            "Mirror Vertical",
+            "Sepia"
+        };
+        bool isProcessing = false;
+
         public Form1()
         {
             InitializeComponent();
+
+            InitializeDefaultImage();
+            InitializeVideoCameras();
+            InitializePart2();
+
+            dip = new BasicDIP();
+        }
+
+        public void InitializeDefaultImage()
+        {
             String defaultImage = System.IO.Path.Combine(Application.StartupPath, "..\\..\\..\\static\\cat.jpg");
             if (System.IO.File.Exists(defaultImage))
             {
                 loaded = new Bitmap(defaultImage);
-                pictureBox1.Image = loaded;
+                reloadImages();
             }
             else
             {
                 MessageBox.Show("Image file not found. " + defaultImage);
+                return;
             }
-            pictureBox1.Image = loaded;
+        }
 
-
+        public void InitializeVideoCameras()
+        {
             fic = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             vcd = new VideoCaptureDevice();
             foreach (FilterInfo dev in fic)
@@ -35,8 +66,26 @@ namespace ImageProcessing
                 comboBox1.Items.Add(dev.Name);
                 comboBox1.SelectedIndex = 0;
             }
+        }
+
+        public void InitializePart2()
+        {
+            foreach (String s in videoEffects)
+            {
+                comboBox2.Items.Add(s);
+            }
+            comboBox2.SelectedIndex = 0;
 
             pictureBox6.BackColor = colorDialog1.Color;
+        }
+
+        public void reloadImages()
+        {
+            pictureBox1.Image = loaded;
+            pictureBox2.Image = processed;
+            pictureBox3.Image = imageA;
+            pictureBox4.Image = imageB;
+            pictureBox5.Image = subtractRes;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -44,167 +93,65 @@ namespace ImageProcessing
             openFileDialog1.ShowDialog();
         }
 
-
         private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             loaded = new Bitmap(openFileDialog1.FileName);
-            pictureBox1.Image = loaded;
         }
 
         private void pixelCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    processed.SetPixel(i, j, loaded.GetPixel(i, j));
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.PixelCopy(loaded);
         }
 
         private void grayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    int avg = (pixel.R + pixel.G + pixel.B) / 3;
-                    Color grayscaled = Color.FromArgb(avg, avg, avg);
-                    processed.SetPixel(i, j, grayscaled);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.GrayScale(loaded);
         }
 
-        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
 
         private void luminenceGrayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    int avg = (int)(pixel.R * 0.3 + pixel.G * 0.59 + pixel.B * 0.11);
-                    Color grayscaled = Color.FromArgb(avg, avg, avg);
-                    processed.SetPixel(i, j, grayscaled);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.LuminenceGrayScale(loaded);
         }
 
         private void inversionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    Color inverted = Color.FromArgb(255 - pixel.R, 255 - pixel.G, 255 - pixel.B);
-                    processed.SetPixel(i, j, inverted);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.Invert(loaded);
         }
 
         private void mirrorHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    processed.SetPixel(loaded.Width - i - 1, j, pixel);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.MirrorHorizontal(loaded);
         }
 
         private void mirrorVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    processed.SetPixel(i, loaded.Height - j - 1, pixel);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.MirrorVertical(loaded);
         }
 
         private void histogramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int[] hist = new int[256];
-
-            for (int i = 0; i < loaded.Width; i++)
-            {
-                for (int j = 0; j < loaded.Height; j++)
-                {
-                    Color pixel = loaded.GetPixel(i, j);
-                    int avg = (pixel.R + pixel.G + pixel.B) / 3;
-                    hist[avg]++;
-                }
-            }
-
-            processed = new Bitmap(256, 800);
-            int max = hist.Max() / processed.Height;
-
-            for (int i = 0; i < hist.Length; i++)
-            {
-                for (int j = 0; j < Math.Min(processed.Height, hist[i] / max); j++)
-                {
-                    processed.SetPixel(i, processed.Height - j - 1, Color.Black);
-                }
-            }
-
-            pictureBox2.Image = processed;
+            pictureBox2.Image = imageB = dip.Histogram(loaded);
         }
 
         private void sepiaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            processed = new Bitmap(loaded.Width, loaded.Height);
+            pictureBox2.Image = imageB = dip.Sepia(loaded);
+        }
 
-            var sepiaMatrix = new float[][] {
-                new float[] { 0.393f, 0.349f, 0.272f, 0, 0 },
-                new float[] { 0.769f, 0.686f, 0.534f, 0, 0 },
-                new float[] { 0.189f, 0.168f, 0.131f, 0, 0 },
-                new float[] { 0,      0,      0,      1, 0 },
-                new float[] { 0,      0,      0,      0, 1 }
-            };
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            pictureBox2.Image = imageB = dip.Brightness(loaded, trackBar1.Value);
+        }
 
-            var attributes = new ImageAttributes();
-            attributes.SetColorMatrix(new ColorMatrix(sepiaMatrix));
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            pictureBox2.Image = imageB = dip.Contrast(loaded, trackBar1.Value);
+        }
 
-            using (var g = Graphics.FromImage(processed))
-            {
-                g.DrawImage(loaded, new Rectangle(0, 0, loaded.Width, loaded.Height),
-                            0, 0, loaded.Width, loaded.Height, GraphicsUnit.Pixel, attributes);
-            }
-
-            pictureBox2.Image = processed;
+        private void trackBar3_Scroll(object sender, EventArgs e)
+        {
+            pictureBox2.Image = imageB = dip.Rotate(loaded, trackBar3.Value);
         }
 
         private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -217,9 +164,6 @@ namespace ImageProcessing
             saveFileDialog1.ShowDialog();
         }
 
-
-        Bitmap imageA, imageB, subtractRes;
-
         private void button1_Click(object sender, EventArgs e)
         {
             openFileDialog2.ShowDialog();
@@ -230,59 +174,19 @@ namespace ImageProcessing
             openFileDialog3.ShowDialog();
         }
 
-        private Bitmap ResizeImage(Bitmap a, Bitmap b)
-        {
-            Bitmap resizedImage = new Bitmap(b.Width, b.Height);
-            using (Graphics g = Graphics.FromImage(resizedImage))
-            {
-                g.DrawImage(a, 0, 0, b.Width, b.Height); 
-            }
-            return resizedImage;
-        }
-
-        private void Subtract()
-        {
-            if (imageA == null || imageB == null) { return; }
-
-            Bitmap a = (Bitmap)imageA.Clone();
-            Bitmap b = (Bitmap)imageB.Clone();
-            a = ResizeImage(a, b);
-            Color subColor = colorDialog1.Color;
-            int sub = (subColor.R + subColor.G + subColor.B) / 3;
-            int threshold = 10;
-
-            subtractRes = new Bitmap(a.Width, a.Height);
-
-            for (int i = 0; i < a.Width; i++)
-            {
-                for (int j = 0; j < a.Height; j++)
-                {
-                    Color front = a.GetPixel(i, j);
-                    Color back = b.GetPixel(i, j);
-                    int curr = (front.R + front.G + front.B) / 3;
-                    subtractRes.SetPixel(i, j, Math.Abs(curr - sub) <= threshold ? back : front);
-                }
-            }
-
-            pictureBox5.Image = subtractRes;
-
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
-            Subtract();
+            pictureBox5.Image = subtractRes = dip.Subtract(imageA, imageB, colorDialog1.Color);
         }
 
         private void openFileDialog2_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            imageA = new Bitmap(openFileDialog2.FileName);
-            pictureBox3.Image = imageA;
+            pictureBox3.Image = imageA = new Bitmap(openFileDialog2.FileName);
         }
 
         private void openFileDialog3_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            imageB = new Bitmap(openFileDialog3.FileName);
-            pictureBox4.Image = imageB;
+            pictureBox4.Image = imageB = new Bitmap(openFileDialog3.FileName);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -293,11 +197,6 @@ namespace ImageProcessing
             }
         }
 
-        private void FinalFrame_NewFrame(object sender, NewFrameEventArgs eventArgs)
-        {
-            imageA = (Bitmap)eventArgs.Frame.Clone();
-            pictureBox3.Image = imageA;
-        }
 
         private void stopCamera()
         {
@@ -320,6 +219,42 @@ namespace ImageProcessing
             }
         }
 
+        private void FinalFrame_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            imageA = (Bitmap)eventArgs.Frame.Clone();
+
+            switch (videoEffectsIndex)
+            {
+                case 0:
+                    vfxRes = dip.Subtract(imageA, imageB, colorDialog1.Color);
+                    break;
+                case 1:
+                    vfxRes = dip.PixelCopy(imageA);
+                    break;
+                case 2:
+                    vfxRes = dip.GrayScale(imageA);
+                    break;
+                case 3:
+                    vfxRes = dip.LuminenceGrayScale(imageA);
+                    break;
+                case 4:
+                    vfxRes = dip.Invert(imageA);
+                    break;
+                case 5:
+                    vfxRes = dip.MirrorHorizontal(imageA);
+                    break;
+                case 6:
+                    vfxRes = dip.MirrorVertical(imageA);
+                    break;
+                case 7:
+                    vfxRes = dip.Sepia(imageA);
+                    break;
+            }
+
+            pictureBox3.Image = imageA;
+            pictureBox5.Image = vfxRes;
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             useCamera();
@@ -329,11 +264,16 @@ namespace ImageProcessing
         {
             useCamera();
         }
-        
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             stopCamera();
             base.OnFormClosing(e);
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            videoEffectsIndex = comboBox2.SelectedIndex;
         }
     }
 }
