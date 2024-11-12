@@ -96,62 +96,62 @@ namespace ImageProcessing
         private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             loaded = new Bitmap(openFileDialog1.FileName);
+            reloadImages();
         }
 
         private void pixelCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.PixelCopy(loaded);
+            pictureBox2.Image = processed = dip.PixelCopy(loaded);
         }
 
         private void grayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.GrayScale(loaded);
+            pictureBox2.Image = processed = dip.GrayScale(loaded);
         }
-
 
         private void luminenceGrayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.LuminenceGrayScale(loaded);
+            pictureBox2.Image = processed = dip.LuminenceGrayScale(loaded);
         }
 
         private void inversionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Invert(loaded);
+            pictureBox2.Image = processed = dip.Invert(loaded);
         }
 
         private void mirrorHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.MirrorHorizontal(loaded);
+            pictureBox2.Image = processed = dip.MirrorHorizontal(loaded);
         }
 
         private void mirrorVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.MirrorVertical(loaded);
+            pictureBox2.Image = processed = dip.MirrorVertical(loaded);
         }
 
         private void histogramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Histogram(loaded);
+            pictureBox2.Image = processed = dip.Histogram(loaded);
         }
 
         private void sepiaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Sepia(loaded);
+            pictureBox2.Image = processed = dip.Sepia(loaded);
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Brightness(loaded, trackBar1.Value);
+            pictureBox2.Image = processed = dip.Brightness(loaded, trackBar1.Value);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Contrast(loaded, trackBar1.Value);
+            pictureBox2.Image = processed = dip.Contrast(loaded, trackBar1.Value);
         }
 
         private void trackBar3_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = imageB = dip.Rotate(loaded, trackBar3.Value);
+            pictureBox2.Image = processed = dip.Rotate(loaded, trackBar3.Value);
         }
 
         private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -182,11 +182,13 @@ namespace ImageProcessing
         private void openFileDialog2_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             pictureBox3.Image = imageA = new Bitmap(openFileDialog2.FileName);
+            reloadImages();
         }
 
         private void openFileDialog3_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             pictureBox4.Image = imageB = new Bitmap(openFileDialog3.FileName);
+            reloadImages();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -274,6 +276,56 @@ namespace ImageProcessing
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             videoEffectsIndex = comboBox2.SelectedIndex;
+        }
+
+        private void shrinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.Shrink(loaded);
+        }
+
+        private void sharpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.Sharpen(loaded);
+        }
+
+        private void blurToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.Blur(loaded);
+        }
+
+        private void strongerBlurToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.StrongerBlur(loaded);
+        }
+
+        private void edgeEnchanceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.EdgeEnhance(loaded);
+        }
+
+        private void edgeDetectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.EdgeDetect(loaded);
+        }
+
+        private void gaussianBlurToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.GaussianBlur(loaded);
+        }
+
+        private void embossToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.EmbossLaplascian(loaded);
+        }
+
+        private void meanRemovalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.MeanRemoval(loaded);
+        }
+
+        private void embossLaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox2.Image = processed = dip.EmbossLaplascian(loaded);
         }
     }
 }

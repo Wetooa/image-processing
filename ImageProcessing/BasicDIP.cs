@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Drawing2D;
 
 
 
@@ -200,6 +201,99 @@ public class BasicDIP
 
         return subtractRes;
     }
+
+    private Bitmap ApplyConvMatrix(Bitmap bitmap, ConvMatrix matrix)
+    {
+        Bitmap result = new Bitmap(bitmap.Width, bitmap.Height);
+
+        int halfN = matrix.n / 2;
+        int halfM = matrix.m / 2;
+        for (int i = 0; i < bitmap.Width - matrix.n; i++)
+        {
+            for (int j = 0; j < bitmap.Height - matrix.m; j++)
+            {
+                int r, g, b = g = r = 0;
+                for (int x = 0; x < matrix.n; x++)
+                {
+                    for (int y = 0; y < matrix.m; y++)
+                    {
+                        Color pixel = bitmap.GetPixel(i + x, j + y);
+                        r += pixel.R * matrix.matrix[x, y];
+                        g += pixel.G * matrix.matrix[x, y];
+                        b += pixel.B * matrix.matrix[x, y];
+                    }
+                }
+                r /= matrix.factor;
+                g /= matrix.factor;
+                b /= matrix.factor;
+
+                r += matrix.offset;
+                g += matrix.offset;
+                b += matrix.offset;
+
+                r = Math.Max(0, Math.Min(255, r));
+                g = Math.Max(0, Math.Min(255, g));
+                b = Math.Max(0, Math.Min(255, b));
+                result.SetPixel(i + halfN, j + halfM, Color.FromArgb(r, g, b));
+            }
+        }
+
+        return result;
+    }
+
+    public Bitmap Shrink(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } }, 0, 1);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap Sharpen(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, -2, 0 }, { -2, 11, -2 }, { 0, -2, 0 } }, 0, 3);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap Blur(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, 0, 9);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap StrongerBlur(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(5, 5, new int[5, 5] { { 1, 1, 1, 1, 1 },{ 1, 1, 1, 1, 1 },{ 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }  }, 0, 25);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap EdgeEnhance(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } }, 0, 2);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap EdgeDetect(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } }, 0, 8);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap GaussianBlur(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {1 ,2 , 1}, {2, 4, 2}, {1, 2, 1} }, 0, 16);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
+    public Bitmap MeanRemoval(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {-1, -1, -1}, {-1, 9, -1}, {-1, -1, -1} }, 0, 1);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+    public Bitmap EmbossLaplascian(Bitmap bitmap)
+    {
+        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {-1, 0, -1}, {0, 4, 0}, {-1, 0, -1} }, 127, 1);
+        return ApplyConvMatrix(bitmap, conv);
+    }
+
 
 
 }

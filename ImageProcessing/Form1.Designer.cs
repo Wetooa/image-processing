@@ -50,6 +50,17 @@
             luminenceGrayscalingToolStripMenuItem = new ToolStripMenuItem();
             histogramToolStripMenuItem = new ToolStripMenuItem();
             sepiaToolStripMenuItem = new ToolStripMenuItem();
+            convolutionalMatrixToolStripMenuItem = new ToolStripMenuItem();
+            shrinkToolStripMenuItem = new ToolStripMenuItem();
+            blurToolStripMenuItem = new ToolStripMenuItem();
+            sharpenToolStripMenuItem = new ToolStripMenuItem();
+            edgeEnchanceToolStripMenuItem = new ToolStripMenuItem();
+            edgeDetectToolStripMenuItem = new ToolStripMenuItem();
+            embossToolStripMenuItem = new ToolStripMenuItem();
+            gaussianBlurToolStripMenuItem = new ToolStripMenuItem();
+            meanRemovalToolStripMenuItem = new ToolStripMenuItem();
+            embossLaToolStripMenuItem = new ToolStripMenuItem();
+            strongerBlurToolStripMenuItem = new ToolStripMenuItem();
             tabPage2 = new TabPage();
             comboBox2 = new ComboBox();
             checkBox1 = new CheckBox();
@@ -170,7 +181,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, dIPToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, dIPToolStripMenuItem, convolutionalMatrixToolStripMenuItem });
             menuStrip1.Location = new Point(3, 3);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(978, 28);
@@ -260,6 +271,83 @@
             sepiaToolStripMenuItem.Size = new Size(243, 26);
             sepiaToolStripMenuItem.Text = "Sepia";
             sepiaToolStripMenuItem.Click += sepiaToolStripMenuItem_Click;
+            // 
+            // convolutionalMatrixToolStripMenuItem
+            // 
+            convolutionalMatrixToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { shrinkToolStripMenuItem, blurToolStripMenuItem, sharpenToolStripMenuItem, edgeEnchanceToolStripMenuItem, edgeDetectToolStripMenuItem, embossToolStripMenuItem, gaussianBlurToolStripMenuItem, meanRemovalToolStripMenuItem, embossLaToolStripMenuItem, strongerBlurToolStripMenuItem });
+            convolutionalMatrixToolStripMenuItem.Name = "convolutionalMatrixToolStripMenuItem";
+            convolutionalMatrixToolStripMenuItem.Size = new Size(161, 24);
+            convolutionalMatrixToolStripMenuItem.Text = "Convolutional Matrix";
+            // 
+            // shrinkToolStripMenuItem
+            // 
+            shrinkToolStripMenuItem.Name = "shrinkToolStripMenuItem";
+            shrinkToolStripMenuItem.Size = new Size(224, 26);
+            shrinkToolStripMenuItem.Text = "Shrink";
+            shrinkToolStripMenuItem.Click += shrinkToolStripMenuItem_Click;
+            // 
+            // blurToolStripMenuItem
+            // 
+            blurToolStripMenuItem.Name = "blurToolStripMenuItem";
+            blurToolStripMenuItem.Size = new Size(224, 26);
+            blurToolStripMenuItem.Text = "Blur";
+            blurToolStripMenuItem.Click += blurToolStripMenuItem_Click;
+            // 
+            // sharpenToolStripMenuItem
+            // 
+            sharpenToolStripMenuItem.Name = "sharpenToolStripMenuItem";
+            sharpenToolStripMenuItem.Size = new Size(224, 26);
+            sharpenToolStripMenuItem.Text = "Sharpen";
+            sharpenToolStripMenuItem.Click += sharpenToolStripMenuItem_Click;
+            // 
+            // edgeEnchanceToolStripMenuItem
+            // 
+            edgeEnchanceToolStripMenuItem.Name = "edgeEnchanceToolStripMenuItem";
+            edgeEnchanceToolStripMenuItem.Size = new Size(224, 26);
+            edgeEnchanceToolStripMenuItem.Text = "Edge Enhance";
+            edgeEnchanceToolStripMenuItem.Click += edgeEnchanceToolStripMenuItem_Click;
+            // 
+            // edgeDetectToolStripMenuItem
+            // 
+            edgeDetectToolStripMenuItem.Name = "edgeDetectToolStripMenuItem";
+            edgeDetectToolStripMenuItem.Size = new Size(224, 26);
+            edgeDetectToolStripMenuItem.Text = "Edge Detect";
+            edgeDetectToolStripMenuItem.Click += edgeDetectToolStripMenuItem_Click;
+            // 
+            // embossToolStripMenuItem
+            // 
+            embossToolStripMenuItem.Name = "embossToolStripMenuItem";
+            embossToolStripMenuItem.Size = new Size(224, 26);
+            embossToolStripMenuItem.Text = "Emboss";
+            embossToolStripMenuItem.Click += embossToolStripMenuItem_Click;
+            // 
+            // gaussianBlurToolStripMenuItem
+            // 
+            gaussianBlurToolStripMenuItem.Name = "gaussianBlurToolStripMenuItem";
+            gaussianBlurToolStripMenuItem.Size = new Size(224, 26);
+            gaussianBlurToolStripMenuItem.Text = "Gaussian Blur";
+            gaussianBlurToolStripMenuItem.Click += gaussianBlurToolStripMenuItem_Click;
+            // 
+            // meanRemovalToolStripMenuItem
+            // 
+            meanRemovalToolStripMenuItem.Name = "meanRemovalToolStripMenuItem";
+            meanRemovalToolStripMenuItem.Size = new Size(224, 26);
+            meanRemovalToolStripMenuItem.Text = "Mean Removal";
+            meanRemovalToolStripMenuItem.Click += meanRemovalToolStripMenuItem_Click;
+            // 
+            // embossLaToolStripMenuItem
+            // 
+            embossLaToolStripMenuItem.Name = "embossLaToolStripMenuItem";
+            embossLaToolStripMenuItem.Size = new Size(224, 26);
+            embossLaToolStripMenuItem.Text = "Emboss Laplascian";
+            embossLaToolStripMenuItem.Click += embossLaToolStripMenuItem_Click;
+            // 
+            // strongerBlurToolStripMenuItem
+            // 
+            strongerBlurToolStripMenuItem.Name = "strongerBlurToolStripMenuItem";
+            strongerBlurToolStripMenuItem.Size = new Size(224, 26);
+            strongerBlurToolStripMenuItem.Text = "Stronger Blur";
+            strongerBlurToolStripMenuItem.Click += strongerBlurToolStripMenuItem_Click;
             // 
             // tabPage2
             // 
@@ -461,5 +549,16 @@
         private TrackBar trackBar3;
         private TrackBar trackBar2;
         private ComboBox comboBox2;
+        private ToolStripMenuItem convolutionalMatrixToolStripMenuItem;
+        private ToolStripMenuItem shrinkToolStripMenuItem;
+        private ToolStripMenuItem blurToolStripMenuItem;
+        private ToolStripMenuItem sharpenToolStripMenuItem;
+        private ToolStripMenuItem edgeEnchanceToolStripMenuItem;
+        private ToolStripMenuItem edgeDetectToolStripMenuItem;
+        private ToolStripMenuItem embossToolStripMenuItem;
+        private ToolStripMenuItem gaussianBlurToolStripMenuItem;
+        private ToolStripMenuItem meanRemovalToolStripMenuItem;
+        private ToolStripMenuItem embossLaToolStripMenuItem;
+        private ToolStripMenuItem strongerBlurToolStripMenuItem;
     }
 }
