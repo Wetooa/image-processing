@@ -1,17 +1,21 @@
-﻿using System;
-using System.Drawing.Drawing2D;
-
-
-
-public class BasicDIP
+﻿public class BasicDIP
 {
-
-	public BasicDIP()
-	{
+    public BasicDIP()
+    {
     }
 
-	public Bitmap Run(Bitmap bitmap, Func<Bitmap, int, int, Color> func)
-	{
+    public static int average(Color pixel)
+    {
+        return (int)(0.3 * pixel.R + 0.59 * pixel.G + 0.11 * pixel.B);
+    }
+
+    public static int clamping(int a)
+    {
+        return Math.Max(Math.Min(a, 255), 0);
+    }
+
+    public static Bitmap Run(Bitmap bitmap, Func<Bitmap, int, int, Color> func)
+    {
         Bitmap processed = new Bitmap(bitmap.Width, bitmap.Height);
 
         for (int i = 0; i < bitmap.Width; i++)
@@ -22,10 +26,10 @@ public class BasicDIP
             }
         }
 
-        return processed; 
-	}
+        return processed;
+    }
 
-    private Bitmap ResizeImage(Bitmap a, Bitmap b)
+    private static Bitmap ResizeImage(Bitmap a, Bitmap b)
     {
         Bitmap resizedImage = new Bitmap(b.Width, b.Height);
         using (Graphics g = Graphics.FromImage(resizedImage))
@@ -35,57 +39,22 @@ public class BasicDIP
         return resizedImage;
     }
 
-    private int[] GetPixelFrequency(Bitmap bitmap)
-    {
-        int[] hist = new int[256];
-
-        for (int i = 0; i < bitmap.Width; i++)
-        {
-            for (int j = 0; j < bitmap.Height; j++)
-            {
-                Color pixel = bitmap.GetPixel(i, j);
-                int avg = (pixel.R + pixel.G + pixel.B) / 3;
-                hist[avg]++;
-            }
-        }
-
-        return hist;
-    }
-
-    public Bitmap Histogram(Bitmap bitmap)
-    {
-        Bitmap processed = new Bitmap(256, 800);
-
-        int[] hist = GetPixelFrequency(bitmap);
-        int max = hist.Max() / processed.Height;
-
-        for (int i = 0; i < hist.Length; i++)
-        {
-            for (int j = 0; j < Math.Min(processed.Height, hist[i] / max); j++)
-            {
-                processed.SetPixel(i, processed.Height - j - 1, Color.Black);
-            }
-        }
-
-        return processed;
-    }
-
-
-    public Bitmap PixelCopy(Bitmap bitmap)
+    public static Bitmap PixelCopy(Bitmap bitmap)
     {
         return Run(bitmap, (bitmap, i, j) => bitmap.GetPixel(i, j));
     }
 
-    public Bitmap GrayScale(Bitmap bitmap)
+    public static Bitmap GrayScale(Bitmap bitmap)
     {
-        return Run(bitmap, (bitmap, i, j) => {
+        return Run(bitmap, (bitmap, i, j) =>
+        {
             Color pixel = bitmap.GetPixel(i, j);
-            int avg = (pixel.R + pixel.G + pixel.B) / 3;
+            int avg = average(pixel);
             return Color.FromArgb(avg, avg, avg);
         });
     }
 
-    public Bitmap LuminenceGrayScale(Bitmap bitmap)
+    public static Bitmap LuminenceGrayScale(Bitmap bitmap)
     {
         return Run(bitmap, (bitmap, i, j) =>
         {
@@ -95,7 +64,7 @@ public class BasicDIP
         });
     }
 
-    public Bitmap Invert(Bitmap bitmap)
+    public static Bitmap Invert(Bitmap bitmap)
     {
         return Run(bitmap, (bitmap, i, j) =>
         {
@@ -104,21 +73,23 @@ public class BasicDIP
         });
     }
 
-    public Bitmap MirrorHorizontal(Bitmap bitmap)
+    public static Bitmap MirrorHorizontal(Bitmap bitmap)
     {
-        return Run(bitmap, (bitmap, i, j) => {
+        return Run(bitmap, (bitmap, i, j) =>
+        {
             return bitmap.GetPixel(bitmap.Width - i - 1, j);
         });
     }
 
-    public Bitmap MirrorVertical(Bitmap bitmap)
+    public static Bitmap MirrorVertical(Bitmap bitmap)
     {
-        return Run(bitmap, (bitmap, i, j) => {
+        return Run(bitmap, (bitmap, i, j) =>
+        {
             return bitmap.GetPixel(i, bitmap.Height - j - 1);
         });
     }
 
-    public Bitmap Sepia(Bitmap bitmap)
+    public static Bitmap Sepia(Bitmap bitmap)
     {
         return Run(bitmap, (bitmap, i, j) =>
         {
@@ -130,7 +101,7 @@ public class BasicDIP
         });
     }
 
-    public Bitmap Rotate(Bitmap bitmap, int degrees)
+    public static Bitmap Rotate(Bitmap bitmap, int degrees)
     {
         float radians = (float)(degrees * Math.PI / 180);
         int xCenter = bitmap.Width / 2;
@@ -151,7 +122,7 @@ public class BasicDIP
         });
     }
 
-    public Bitmap Brightness(Bitmap bitmap, int value)
+    public static Bitmap Brightness(Bitmap bitmap, int value)
     {
         return Run(bitmap, (bitmap, i, j) =>
         {
@@ -164,7 +135,7 @@ public class BasicDIP
         });
     }
 
-    public Bitmap Contrast(Bitmap bitmap, int value)
+    public static Bitmap Contrast(Bitmap bitmap, int value)
     {
         return Run(bitmap, (bitmap, i, j) =>
         {
@@ -177,7 +148,7 @@ public class BasicDIP
         });
     }
 
-    public Bitmap Subtract(Bitmap imageA, Bitmap imageB, Color subColor)
+    public static Bitmap Subtract(Bitmap imageA, Bitmap imageB, Color subColor)
     {
         if (imageA == null || imageB == null) { return null; }
 
@@ -202,98 +173,212 @@ public class BasicDIP
         return subtractRes;
     }
 
-    private Bitmap ApplyConvMatrix(Bitmap bitmap, ConvMatrix matrix)
+    public static Bitmap MedianFilter(Bitmap bitmap, int windowSize)
     {
         Bitmap result = new Bitmap(bitmap.Width, bitmap.Height);
+        int halfSize = windowSize / 2;
 
-        int halfN = matrix.n / 2;
-        int halfM = matrix.m / 2;
-        for (int i = 0; i < bitmap.Width - matrix.n; i++)
+        for (int i = halfSize; i < bitmap.Width - halfSize; i++)
         {
-            for (int j = 0; j < bitmap.Height - matrix.m; j++)
+            for (int j = halfSize; j < bitmap.Height - halfSize; j++)
             {
-                int r, g, b = g = r = 0;
-                for (int x = 0; x < matrix.n; x++)
+                List<int> reds = new List<int>();
+                List<int> greens = new List<int>();
+                List<int> blues = new List<int>();
+
+                // Collect pixel values in the window
+                for (int x = -halfSize; x <= halfSize; x++)
                 {
-                    for (int y = 0; y < matrix.m; y++)
+                    for (int y = -halfSize; y <= halfSize; y++)
                     {
                         Color pixel = bitmap.GetPixel(i + x, j + y);
-                        r += pixel.R * matrix.matrix[x, y];
-                        g += pixel.G * matrix.matrix[x, y];
-                        b += pixel.B * matrix.matrix[x, y];
+                        reds.Add(pixel.R);
+                        greens.Add(pixel.G);
+                        blues.Add(pixel.B);
                     }
                 }
-                r /= matrix.factor;
-                g /= matrix.factor;
-                b /= matrix.factor;
 
-                r += matrix.offset;
-                g += matrix.offset;
-                b += matrix.offset;
+                // Get the median of each channel
+                reds.Sort();
+                greens.Sort();
+                blues.Sort();
 
-                r = Math.Max(0, Math.Min(255, r));
-                g = Math.Max(0, Math.Min(255, g));
-                b = Math.Max(0, Math.Min(255, b));
-                result.SetPixel(i + halfN, j + halfM, Color.FromArgb(r, g, b));
+                int medianR = reds[reds.Count / 2];
+                int medianG = greens[greens.Count / 2];
+                int medianB = blues[blues.Count / 2];
+
+                result.SetPixel(i, j, Color.FromArgb(medianR, medianG, medianB));
             }
         }
 
         return result;
     }
 
-    public Bitmap Shrink(Bitmap bitmap)
+
+    public static Bitmap Thresholding(Bitmap bitmap, int threshold)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } }, 0, 1);
-        return ApplyConvMatrix(bitmap, conv);
+        return Run(bitmap, (bitmap, i, j) =>
+        {
+            Color p = bitmap.GetPixel(i, j);
+            int avg = average(p);
+            return avg < threshold ? Color.Black : Color.White;
+        });
     }
 
-    public Bitmap Sharpen(Bitmap bitmap)
+    public static Bitmap Complement(Bitmap bitmap)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, -2, 0 }, { -2, 11, -2 }, { 0, -2, 0 } }, 0, 3);
-        return ApplyConvMatrix(bitmap, conv);
+        return Run(bitmap, (bitmap, i, j) =>
+        {
+            return average(bitmap.GetPixel(i, j)) != 0 ? Color.Black : Color.White;
+        });
     }
 
-    public Bitmap Blur(Bitmap bitmap)
+    public static Bitmap ZhangSuenThinning(Bitmap binaryImage)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, 0, 9);
-        return ApplyConvMatrix(bitmap, conv);
+        int width = binaryImage.Width;
+        int height = binaryImage.Height;
+        bool[,] pixels = ConvertToBinaryArray(binaryImage);
+
+        bool pixelsChanged;
+        do
+        {
+            pixelsChanged = false;
+
+            // First sub-iteration
+            pixelsChanged |= ThinningSubIteration(pixels, width, height, true);
+
+            // Second sub-iteration
+            pixelsChanged |= ThinningSubIteration(pixels, width, height, false);
+
+        } while (pixelsChanged);
+
+        return ConvertToBitmap(pixels, width, height);
     }
 
-    public Bitmap StrongerBlur(Bitmap bitmap)
+    private static bool ThinningSubIteration(bool[,] pixels, int width, int height, bool firstSubIteration)
     {
-        ConvMatrix conv = new ConvMatrix(5, 5, new int[5, 5] { { 1, 1, 1, 1, 1 },{ 1, 1, 1, 1, 1 },{ 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }  }, 0, 25);
-        return ApplyConvMatrix(bitmap, conv);
+        bool pixelsChanged = false;
+        bool[,] marker = new bool[width, height];
+
+        for (int x = 1; x < width - 1; x++)
+        {
+            for (int y = 1; y < height - 1; y++)
+            {
+                if (!pixels[x, y]) continue;
+
+                int neighbors = CountWhiteNeighbors(pixels, x, y);
+                int transitions = CountTransitions(pixels, x, y);
+
+                if (neighbors >= 2 && neighbors <= 6 &&
+                    transitions == 1 &&
+                    AtLeastOneBlackNeighbor(pixels, x, y, firstSubIteration))
+                {
+                    marker[x, y] = true;
+                }
+            }
+        }
+
+        for (int x = 1; x < width - 1; x++)
+        {
+            for (int y = 1; y < height - 1; y++)
+            {
+                if (marker[x, y])
+                {
+                    pixels[x, y] = false;
+                    pixelsChanged = true;
+                }
+            }
+        }
+
+        return pixelsChanged;
     }
 
-    public Bitmap EdgeEnhance(Bitmap bitmap)
+    private static int CountWhiteNeighbors(bool[,] pixels, int x, int y)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } }, 0, 2);
-        return ApplyConvMatrix(bitmap, conv);
+        int count = 0;
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (dx == 0 && dy == 0) continue;
+                if (pixels[x + dx, y + dy]) count++;
+            }
+        }
+        return count;
     }
 
-    public Bitmap EdgeDetect(Bitmap bitmap)
+    private static int CountTransitions(bool[,] pixels, int x, int y)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } }, 0, 8);
-        return ApplyConvMatrix(bitmap, conv);
+        int count = 0;
+
+        bool[] neighbors = GetNeighbors(pixels, x, y);
+        for (int i = 0; i < neighbors.Length; i++)
+        {
+            if (!neighbors[i] && neighbors[(i + 1) % neighbors.Length])
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
-    public Bitmap GaussianBlur(Bitmap bitmap)
+    private static bool AtLeastOneBlackNeighbor(bool[,] pixels, int x, int y, bool firstSubIteration)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {1 ,2 , 1}, {2, 4, 2}, {1, 2, 1} }, 0, 16);
-        return ApplyConvMatrix(bitmap, conv);
+        if (firstSubIteration)
+        {
+            return !(pixels[x, y - 1] && pixels[x + 1, y] && pixels[x, y + 1]);
+        }
+        else
+        {
+            return !(pixels[x + 1, y] && pixels[x, y + 1] && pixels[x - 1, y]);
+        }
     }
 
-    public Bitmap MeanRemoval(Bitmap bitmap)
+    private static bool[] GetNeighbors(bool[,] pixels, int x, int y)
     {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {-1, -1, -1}, {-1, 9, -1}, {-1, -1, -1} }, 0, 1);
-        return ApplyConvMatrix(bitmap, conv);
-    }
-    public Bitmap EmbossLaplascian(Bitmap bitmap)
-    {
-        ConvMatrix conv = new ConvMatrix(3, 3, new int[3, 3] { {-1, 0, -1}, {0, 4, 0}, {-1, 0, -1} }, 127, 1);
-        return ApplyConvMatrix(bitmap, conv);
+        return new bool[]
+        {
+            pixels[x, y - 1],     // N
+            pixels[x + 1, y - 1], // NE
+            pixels[x + 1, y],     // E
+            pixels[x + 1, y + 1], // SE
+            pixels[x, y + 1],     // S
+            pixels[x - 1, y + 1], // SW
+            pixels[x - 1, y],     // W
+            pixels[x - 1, y - 1]  // NW
+        };
     }
 
+    private static bool[,] ConvertToBinaryArray(Bitmap binaryImage)
+    {
+        int width = binaryImage.Width;
+        int height = binaryImage.Height;
+        bool[,] pixels = new bool[width, height];
 
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Color color = binaryImage.GetPixel(x, y);
+                pixels[x, y] = color.R == 255; // Assume binary image is already thresholded
+            }
+        }
+
+        return pixels;
+    }
+
+    private static Bitmap ConvertToBitmap(bool[,] pixels, int width, int height)
+    {
+        Bitmap bitmap = new Bitmap(width, height);
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                bitmap.SetPixel(x, y, pixels[x, y] ? Color.White : Color.Black);
+            }
+        }
+        return bitmap;
+    }
 
 }

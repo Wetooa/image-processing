@@ -1,16 +1,14 @@
-﻿using System;
-
-public class ConvMatrix
+﻿public class ConvMatrix
 {
-	public int n, m;
-	public int[,] matrix;
+    public int n, m;
+    public int[,] matrix;
     public int offset, factor;
 
-	public ConvMatrix(int n, int m, int[,] matrix, int offset, int factor) 
-	{
-		this.n = n;
+    public ConvMatrix(int n, int m, int[,] matrix, int offset, int factor)
+    {
+        this.n = n;
         this.m = m;
-		this.matrix = matrix;
+        this.matrix = matrix;
         this.offset = offset;
         this.factor = factor;
     }

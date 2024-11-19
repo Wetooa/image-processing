@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             openFileDialog1 = new OpenFileDialog();
             saveFileDialog1 = new SaveFileDialog();
             tabControl1 = new TabControl();
@@ -73,9 +74,20 @@
             pictureBox5 = new PictureBox();
             pictureBox4 = new PictureBox();
             pictureBox3 = new PictureBox();
+            tabPage3 = new TabPage();
+            listBox1 = new ListBox();
+            label2 = new Label();
+            label1 = new Label();
+            button8 = new Button();
+            button7 = new Button();
+            button6 = new Button();
+            button5 = new Button();
+            pictureBox7 = new PictureBox();
             openFileDialog2 = new OpenFileDialog();
             openFileDialog3 = new OpenFileDialog();
             colorDialog1 = new ColorDialog();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            openFileDialog4 = new OpenFileDialog();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar3).BeginInit();
@@ -89,6 +101,8 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             SuspendLayout();
             // 
             // openFileDialog1
@@ -105,6 +119,7 @@
             tabControl1.AccessibleName = "";
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
+            tabControl1.Controls.Add(tabPage3);
             tabControl1.Location = new Point(12, 12);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -124,7 +139,7 @@
             tabPage1.Padding = new Padding(3);
             tabPage1.Size = new Size(984, 530);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "Part 1";
+            tabPage1.Text = "DIP";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // trackBar3
@@ -282,70 +297,70 @@
             // shrinkToolStripMenuItem
             // 
             shrinkToolStripMenuItem.Name = "shrinkToolStripMenuItem";
-            shrinkToolStripMenuItem.Size = new Size(224, 26);
+            shrinkToolStripMenuItem.Size = new Size(216, 26);
             shrinkToolStripMenuItem.Text = "Shrink";
             shrinkToolStripMenuItem.Click += shrinkToolStripMenuItem_Click;
             // 
             // blurToolStripMenuItem
             // 
             blurToolStripMenuItem.Name = "blurToolStripMenuItem";
-            blurToolStripMenuItem.Size = new Size(224, 26);
+            blurToolStripMenuItem.Size = new Size(216, 26);
             blurToolStripMenuItem.Text = "Blur";
             blurToolStripMenuItem.Click += blurToolStripMenuItem_Click;
             // 
             // sharpenToolStripMenuItem
             // 
             sharpenToolStripMenuItem.Name = "sharpenToolStripMenuItem";
-            sharpenToolStripMenuItem.Size = new Size(224, 26);
+            sharpenToolStripMenuItem.Size = new Size(216, 26);
             sharpenToolStripMenuItem.Text = "Sharpen";
             sharpenToolStripMenuItem.Click += sharpenToolStripMenuItem_Click;
             // 
             // edgeEnchanceToolStripMenuItem
             // 
             edgeEnchanceToolStripMenuItem.Name = "edgeEnchanceToolStripMenuItem";
-            edgeEnchanceToolStripMenuItem.Size = new Size(224, 26);
+            edgeEnchanceToolStripMenuItem.Size = new Size(216, 26);
             edgeEnchanceToolStripMenuItem.Text = "Edge Enhance";
             edgeEnchanceToolStripMenuItem.Click += edgeEnchanceToolStripMenuItem_Click;
             // 
             // edgeDetectToolStripMenuItem
             // 
             edgeDetectToolStripMenuItem.Name = "edgeDetectToolStripMenuItem";
-            edgeDetectToolStripMenuItem.Size = new Size(224, 26);
+            edgeDetectToolStripMenuItem.Size = new Size(216, 26);
             edgeDetectToolStripMenuItem.Text = "Edge Detect";
             edgeDetectToolStripMenuItem.Click += edgeDetectToolStripMenuItem_Click;
             // 
             // embossToolStripMenuItem
             // 
             embossToolStripMenuItem.Name = "embossToolStripMenuItem";
-            embossToolStripMenuItem.Size = new Size(224, 26);
+            embossToolStripMenuItem.Size = new Size(216, 26);
             embossToolStripMenuItem.Text = "Emboss";
             embossToolStripMenuItem.Click += embossToolStripMenuItem_Click;
             // 
             // gaussianBlurToolStripMenuItem
             // 
             gaussianBlurToolStripMenuItem.Name = "gaussianBlurToolStripMenuItem";
-            gaussianBlurToolStripMenuItem.Size = new Size(224, 26);
+            gaussianBlurToolStripMenuItem.Size = new Size(216, 26);
             gaussianBlurToolStripMenuItem.Text = "Gaussian Blur";
             gaussianBlurToolStripMenuItem.Click += gaussianBlurToolStripMenuItem_Click;
             // 
             // meanRemovalToolStripMenuItem
             // 
             meanRemovalToolStripMenuItem.Name = "meanRemovalToolStripMenuItem";
-            meanRemovalToolStripMenuItem.Size = new Size(224, 26);
+            meanRemovalToolStripMenuItem.Size = new Size(216, 26);
             meanRemovalToolStripMenuItem.Text = "Mean Removal";
             meanRemovalToolStripMenuItem.Click += meanRemovalToolStripMenuItem_Click;
             // 
             // embossLaToolStripMenuItem
             // 
             embossLaToolStripMenuItem.Name = "embossLaToolStripMenuItem";
-            embossLaToolStripMenuItem.Size = new Size(224, 26);
+            embossLaToolStripMenuItem.Size = new Size(216, 26);
             embossLaToolStripMenuItem.Text = "Emboss Laplascian";
             embossLaToolStripMenuItem.Click += embossLaToolStripMenuItem_Click;
             // 
             // strongerBlurToolStripMenuItem
             // 
             strongerBlurToolStripMenuItem.Name = "strongerBlurToolStripMenuItem";
-            strongerBlurToolStripMenuItem.Size = new Size(224, 26);
+            strongerBlurToolStripMenuItem.Size = new Size(216, 26);
             strongerBlurToolStripMenuItem.Text = "Stronger Blur";
             strongerBlurToolStripMenuItem.Click += strongerBlurToolStripMenuItem_Click;
             // 
@@ -367,7 +382,7 @@
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(984, 530);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "Part 2";
+            tabPage2.Text = "Subtract";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // comboBox2
@@ -474,6 +489,101 @@
             pictureBox3.TabIndex = 0;
             pictureBox3.TabStop = false;
             // 
+            // tabPage3
+            // 
+            tabPage3.Controls.Add(listBox1);
+            tabPage3.Controls.Add(label2);
+            tabPage3.Controls.Add(label1);
+            tabPage3.Controls.Add(button8);
+            tabPage3.Controls.Add(button7);
+            tabPage3.Controls.Add(button6);
+            tabPage3.Controls.Add(button5);
+            tabPage3.Controls.Add(pictureBox7);
+            tabPage3.Location = new Point(4, 29);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(984, 530);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "Count Coins";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.Location = new Point(551, 308);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(193, 184);
+            listBox1.TabIndex = 8;
+            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 20F);
+            label2.Location = new Point(626, 97);
+            label2.Name = "label2";
+            label2.Size = new Size(38, 46);
+            label2.TabIndex = 7;
+            label2.Text = "0";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(551, 42);
+            label1.Name = "label1";
+            label1.Size = new Size(51, 20);
+            label1.TabIndex = 6;
+            label1.Text = "Count:";
+            // 
+            // button8
+            // 
+            button8.Location = new Point(550, 192);
+            button8.Name = "button8";
+            button8.Size = new Size(194, 29);
+            button8.TabIndex = 4;
+            button8.Text = "Select";
+            button8.UseVisualStyleBackColor = true;
+            button8.Click += button8_Click;
+            // 
+            // button7
+            // 
+            button7.Location = new Point(650, 262);
+            button7.Name = "button7";
+            button7.Size = new Size(94, 29);
+            button7.TabIndex = 3;
+            button7.Text = ">";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += button7_Click;
+            // 
+            // button6
+            // 
+            button6.Location = new Point(550, 262);
+            button6.Name = "button6";
+            button6.Size = new Size(94, 29);
+            button6.TabIndex = 2;
+            button6.Text = "<";
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(548, 227);
+            button5.Name = "button5";
+            button5.Size = new Size(196, 29);
+            button5.TabIndex = 1;
+            button5.Text = "Solve";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.Location = new Point(42, 42);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(436, 446);
+            pictureBox7.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox7.TabIndex = 0;
+            pictureBox7.TabStop = false;
+            // 
             // openFileDialog2
             // 
             openFileDialog2.FileName = "openFileDialog2";
@@ -483,6 +593,17 @@
             // 
             openFileDialog3.FileName = "openFileDialog3";
             openFileDialog3.FileOk += openFileDialog3_FileOk;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
+            // openFileDialog4
+            // 
+            openFileDialog4.FileName = "openFileDialog4";
+            openFileDialog4.FileOk += openFileDialog4_FileOk;
             // 
             // Form1
             // 
@@ -508,6 +629,9 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            tabPage3.ResumeLayout(false);
+            tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ResumeLayout(false);
         }
 
@@ -560,5 +684,16 @@
         private ToolStripMenuItem meanRemovalToolStripMenuItem;
         private ToolStripMenuItem embossLaToolStripMenuItem;
         private ToolStripMenuItem strongerBlurToolStripMenuItem;
+        private TabPage tabPage3;
+        private PictureBox pictureBox7;
+        private Button button5;
+        private ContextMenuStrip contextMenuStrip1;
+        private Button button6;
+        private Button button8;
+        private Button button7;
+        private OpenFileDialog openFileDialog4;
+        private Label label2;
+        private Label label1;
+        private ListBox listBox1;
     }
 }

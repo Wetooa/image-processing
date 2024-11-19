@@ -1,7 +1,3 @@
-using System.DirectoryServices;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq.Expressions;
 using AForge.Video;
 using AForge.Video.DirectShow;
 
@@ -10,7 +6,6 @@ namespace ImageProcessing
     public partial class Form1 : Form
     {
         Bitmap loaded, processed;
-        BasicDIP dip;
 
         FilterInfoCollection fic;
         VideoCaptureDevice vcd;
@@ -31,6 +26,10 @@ namespace ImageProcessing
         };
         bool isProcessing = false;
 
+        List<Bitmap> countCoinsSteps = new List<Bitmap>();
+        int currentStep = 0;
+        const int MAX_STEPS = 10;
+
         public Form1()
         {
             InitializeComponent();
@@ -39,7 +38,6 @@ namespace ImageProcessing
             InitializeVideoCameras();
             InitializePart2();
 
-            dip = new BasicDIP();
         }
 
         public void InitializeDefaultImage()
@@ -48,6 +46,22 @@ namespace ImageProcessing
             if (System.IO.File.Exists(defaultImage))
             {
                 loaded = new Bitmap(defaultImage);
+                reloadImages();
+            }
+            else
+            {
+                MessageBox.Show("Image file not found. " + defaultImage);
+                return;
+            }
+
+
+            String countCoinsImage = System.IO.Path.Combine(Application.StartupPath, "..\\..\\..\\static\\coins.jpeg");
+            if (System.IO.File.Exists(defaultImage))
+            {
+                countCoinsSteps.Add(new Bitmap(countCoinsImage));
+                currentStep = 0;
+                listBox1.Items.Add("Base");
+                listBox1.SelectedIndex = currentStep;
                 reloadImages();
             }
             else
@@ -86,6 +100,7 @@ namespace ImageProcessing
             pictureBox3.Image = imageA;
             pictureBox4.Image = imageB;
             pictureBox5.Image = subtractRes;
+            pictureBox7.Image = countCoinsSteps.Count <= currentStep ? null : countCoinsSteps[currentStep];
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -101,57 +116,57 @@ namespace ImageProcessing
 
         private void pixelCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.PixelCopy(loaded);
+            pictureBox2.Image = processed = BasicDIP.PixelCopy(loaded);
         }
 
         private void grayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.GrayScale(loaded);
+            pictureBox2.Image = processed = BasicDIP.GrayScale(loaded);
         }
 
         private void luminenceGrayscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.LuminenceGrayScale(loaded);
+            pictureBox2.Image = processed = BasicDIP.LuminenceGrayScale(loaded);
         }
 
         private void inversionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Invert(loaded);
+            pictureBox2.Image = processed = BasicDIP.Invert(loaded);
         }
 
         private void mirrorHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.MirrorHorizontal(loaded);
+            pictureBox2.Image = processed = BasicDIP.MirrorHorizontal(loaded);
         }
 
         private void mirrorVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.MirrorVertical(loaded);
+            pictureBox2.Image = processed = BasicDIP.MirrorVertical(loaded);
         }
 
         private void histogramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Histogram(loaded);
+            pictureBox2.Image = processed = Histogram.GenerateHistogram(loaded);
         }
 
         private void sepiaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Sepia(loaded);
+            pictureBox2.Image = processed = BasicDIP.Sepia(loaded);
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Brightness(loaded, trackBar1.Value);
+            pictureBox2.Image = processed = BasicDIP.Brightness(loaded, trackBar1.Value);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Contrast(loaded, trackBar1.Value);
+            pictureBox2.Image = processed = BasicDIP.Contrast(loaded, trackBar1.Value);
         }
 
         private void trackBar3_Scroll(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Rotate(loaded, trackBar3.Value);
+            pictureBox2.Image = processed = BasicDIP.Rotate(loaded, trackBar3.Value);
         }
 
         private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -176,7 +191,7 @@ namespace ImageProcessing
 
         private void button3_Click(object sender, EventArgs e)
         {
-            pictureBox5.Image = subtractRes = dip.Subtract(imageA, imageB, colorDialog1.Color);
+            pictureBox5.Image = subtractRes = BasicDIP.Subtract(imageA, imageB, colorDialog1.Color);
         }
 
         private void openFileDialog2_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -228,28 +243,28 @@ namespace ImageProcessing
             switch (videoEffectsIndex)
             {
                 case 0:
-                    vfxRes = dip.Subtract(imageA, imageB, colorDialog1.Color);
+                    vfxRes = BasicDIP.Subtract(imageA, imageB, colorDialog1.Color);
                     break;
                 case 1:
-                    vfxRes = dip.PixelCopy(imageA);
+                    vfxRes = BasicDIP.PixelCopy(imageA);
                     break;
                 case 2:
-                    vfxRes = dip.GrayScale(imageA);
+                    vfxRes = BasicDIP.GrayScale(imageA);
                     break;
                 case 3:
-                    vfxRes = dip.LuminenceGrayScale(imageA);
+                    vfxRes = BasicDIP.LuminenceGrayScale(imageA);
                     break;
                 case 4:
-                    vfxRes = dip.Invert(imageA);
+                    vfxRes = BasicDIP.Invert(imageA);
                     break;
                 case 5:
-                    vfxRes = dip.MirrorHorizontal(imageA);
+                    vfxRes = BasicDIP.MirrorHorizontal(imageA);
                     break;
                 case 6:
-                    vfxRes = dip.MirrorVertical(imageA);
+                    vfxRes = BasicDIP.MirrorVertical(imageA);
                     break;
                 case 7:
-                    vfxRes = dip.Sepia(imageA);
+                    vfxRes = BasicDIP.Sepia(imageA);
                     break;
             }
 
@@ -280,52 +295,187 @@ namespace ImageProcessing
 
         private void shrinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Shrink(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.Shrink(loaded);
         }
 
         private void sharpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Sharpen(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.Sharpen(loaded);
         }
 
         private void blurToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.Blur(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.Blur(loaded);
         }
 
         private void strongerBlurToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.StrongerBlur(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.StrongerBlur(loaded);
         }
 
         private void edgeEnchanceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.EdgeEnhance(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.EdgeEnhance(loaded);
         }
 
         private void edgeDetectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.EdgeDetect(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.EdgeDetect(loaded);
         }
 
         private void gaussianBlurToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.GaussianBlur(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.GaussianBlur(loaded);
         }
 
         private void embossToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.EmbossLaplascian(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.EmbossLaplascian(loaded);
         }
 
         private void meanRemovalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.MeanRemoval(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.MeanRemoval(loaded);
         }
 
         private void embossLaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox2.Image = processed = dip.EmbossLaplascian(loaded);
+            pictureBox2.Image = processed = ConvolutionMatrix.EmbossLaplascian(loaded);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            openFileDialog4.ShowDialog();
+        }
+
+        private void openFileDialog4_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            pictureBox7.Image = new Bitmap(openFileDialog4.FileName);
+        }
+
+        private void solveCountCoins(int end = MAX_STEPS)
+        {
+            for (int i = countCoinsSteps.Count; i < end; i++)
+            {
+                switch (i)
+                {
+                    case 1:
+                        countCoinsSteps.Add(BasicDIP.GrayScale(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("Grayscale");
+                        break;
+                    case 2:
+                        countCoinsSteps.Add(ConvolutionMatrix.GaussianBlur(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("Gaussian Blur");
+                        break;
+                    case 3:
+                        countCoinsSteps.Add(ConvolutionMatrix.EdgeDetect(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("Edge Detect");
+                        break;
+                    case 4:
+                        countCoinsSteps.Add(BasicDIP.MedianFilter(countCoinsSteps[i - 1], 3));
+                        listBox1.Items.Add("Thresholding");
+                        break;
+                    case 5:
+                        countCoinsSteps.Add(ConvolutionMatrix.Dilation(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("Dilation");
+                        break;
+                    case 6:
+                        countCoinsSteps.Add(ConvolutionMatrix.Erosion(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("Erosion");
+                        break;
+                    case 7:
+                        Bitmap b = BasicDIP.MedianFilter(countCoinsSteps[i - 1], 3);
+                        b = BasicDIP.MedianFilter(b, 3);
+                        b = BasicDIP.MedianFilter(b, 3);
+                        b = BasicDIP.MedianFilter(b, 3);
+                        countCoinsSteps.Add(b);
+                        listBox1.Items.Add("Median Filter");
+                        break;
+                    case 8:
+                        countCoinsSteps.Add(BasicDIP.PixelCopy(countCoinsSteps[i - 1]));
+                        listBox1.Items.Add("ZhangSuen Thinning");
+                        break;
+                    case 9:
+                        Bitmap prev = countCoinsSteps[i - 1];
+                        List<List<Point>> contours = ContourTracing.TraceContours(prev);
+
+                        Bitmap contourImage = new Bitmap(prev.Width, prev.Height);
+
+                        // Analyze the contours
+                        int totalCoins = 0;
+                        List<double> coinSizes = new List<double>();
+
+                        using (Graphics g = Graphics.FromImage(contourImage))
+                        {
+                            g.Clear(Color.Black);
+                            foreach (var contour in contours)
+                            {
+                                foreach (var point in contour)
+                                {
+                                    contourImage.SetPixel(point.X, point.Y, Color.Red);
+                                }
+
+                                double perimeter = CoinCounter.CalculatePerimeter(contour);
+                                double area = CoinCounter.CalculateArea(contour);
+
+                                if (perimeter == 0) continue; // Avoid division by zero
+
+                                double circularity = (4 * Math.PI * area) / (perimeter * perimeter);
+
+                                // Check if the contour qualifies as a coin
+                                if (circularity >= 0.85) // Adjust threshold as needed
+                                {
+                                    totalCoins++;
+                                    coinSizes.Add(area); // Store the size of the coin
+                                }
+                            }
+
+                        }
+
+                        MessageBox.Show("" + contours.Count);
+                        MessageBox.Show("" + contours.ToArray());
+
+                        countCoinsSteps.Add(contourImage);
+                        listBox1.Items.Add("Trace Contours");
+
+                        // 64 Coins in Total
+                        label2.Text = totalCoins.ToString();
+                        break;
+                }
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            solveCountCoins();
+            currentStep = MAX_STEPS - 1;
+            listBox1.SelectedIndex = currentStep;
+            reloadImages();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (currentStep == 0) return;
+
+            currentStep -= 1;
+            reloadImages();
+            listBox1.SelectedIndex = currentStep;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (currentStep + 1 == MAX_STEPS) return;
+
+            currentStep += 1;
+            solveCountCoins(Math.Min(countCoinsSteps.Count, currentStep) + 1);
+            listBox1.SelectedIndex = currentStep;
+            reloadImages();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            currentStep = listBox1.SelectedIndex;
+            reloadImages();
         }
     }
 }
