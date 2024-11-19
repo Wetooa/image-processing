@@ -75,6 +75,10 @@
             pictureBox4 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage3 = new TabPage();
+            label3 = new Label();
+            label4 = new Label();
+            button9 = new Button();
+            listBox2 = new ListBox();
             listBox1 = new ListBox();
             label2 = new Label();
             label1 = new Label();
@@ -88,6 +92,7 @@
             colorDialog1 = new ColorDialog();
             contextMenuStrip1 = new ContextMenuStrip(components);
             openFileDialog4 = new OpenFileDialog();
+            saveFileDialog2 = new SaveFileDialog();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar3).BeginInit();
@@ -491,6 +496,10 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(label3);
+            tabPage3.Controls.Add(label4);
+            tabPage3.Controls.Add(button9);
+            tabPage3.Controls.Add(listBox2);
             tabPage3.Controls.Add(listBox1);
             tabPage3.Controls.Add(label2);
             tabPage3.Controls.Add(label1);
@@ -507,6 +516,44 @@
             tabPage3.Text = "Count Coins";
             tabPage3.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 11F);
+            label3.Location = new Point(551, 142);
+            label3.Name = "label3";
+            label3.Size = new Size(22, 25);
+            label3.TabIndex = 12;
+            label3.Text = "0";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(541, 122);
+            label4.Name = "label4";
+            label4.Size = new Size(48, 20);
+            label4.TabIndex = 11;
+            label4.Text = "Value:";
+            // 
+            // button9
+            // 
+            button9.Location = new Point(650, 192);
+            button9.Name = "button9";
+            button9.Size = new Size(94, 29);
+            button9.TabIndex = 10;
+            button9.Text = "Save";
+            button9.UseVisualStyleBackColor = true;
+            button9.Click += button9_Click;
+            // 
+            // listBox2
+            // 
+            listBox2.FormattingEnabled = true;
+            listBox2.Location = new Point(770, 48);
+            listBox2.Name = "listBox2";
+            listBox2.Size = new Size(178, 444);
+            listBox2.TabIndex = 9;
+            listBox2.SelectedIndexChanged += listBox2_SelectedIndexChanged;
+            // 
             // listBox1
             // 
             listBox1.FormattingEnabled = true;
@@ -520,7 +567,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 20F);
-            label2.Location = new Point(626, 97);
+            label2.Location = new Point(551, 62);
             label2.Name = "label2";
             label2.Size = new Size(38, 46);
             label2.TabIndex = 7;
@@ -529,7 +576,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(551, 42);
+            label1.Location = new Point(541, 42);
             label1.Name = "label1";
             label1.Size = new Size(51, 20);
             label1.TabIndex = 6;
@@ -539,7 +586,7 @@
             // 
             button8.Location = new Point(550, 192);
             button8.Name = "button8";
-            button8.Size = new Size(194, 29);
+            button8.Size = new Size(94, 29);
             button8.TabIndex = 4;
             button8.Text = "Select";
             button8.UseVisualStyleBackColor = true;
@@ -604,6 +651,10 @@
             // 
             openFileDialog4.FileName = "openFileDialog4";
             openFileDialog4.FileOk += openFileDialog4_FileOk;
+            // 
+            // saveFileDialog2
+            // 
+            saveFileDialog2.FileOk += saveFileDialog2_FileOk;
             // 
             // Form1
             // 
@@ -695,5 +746,10 @@
         private Label label2;
         private Label label1;
         private ListBox listBox1;
+        private ListBox listBox2;
+        private Button button9;
+        private SaveFileDialog saveFileDialog2;
+        private Label label3;
+        private Label label4;
     }
 }

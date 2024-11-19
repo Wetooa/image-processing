@@ -30,6 +30,10 @@ namespace ImageProcessing
         int currentStep = 0;
         const int MAX_STEPS = 10;
 
+        List<List<Point>> coins;
+        List<int> coinValues;
+        List<double> coinSizes;
+
         public Form1()
         {
             InitializeComponent();
@@ -350,7 +354,13 @@ namespace ImageProcessing
 
         private void openFileDialog4_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            pictureBox7.Image = new Bitmap(openFileDialog4.FileName);
+            countCoinsSteps.Clear();
+            countCoinsSteps.Add(new Bitmap(openFileDialog4.FileName));
+            currentStep = 0;
+            listBox1.Items.Clear();
+            listBox1.Items.Add("Base");
+            listBox1.SelectedIndex = currentStep;
+            reloadImages();
         }
 
         private void solveCountCoins(int end = MAX_STEPS)
@@ -373,7 +383,7 @@ namespace ImageProcessing
                         break;
                     case 4:
                         countCoinsSteps.Add(BasicDIP.MedianFilter(countCoinsSteps[i - 1], 3));
-                        listBox1.Items.Add("Thresholding");
+                        listBox1.Items.Add("Median Filter");
                         break;
                     case 5:
                         countCoinsSteps.Add(ConvolutionMatrix.Dilation(countCoinsSteps[i - 1]));
@@ -389,7 +399,7 @@ namespace ImageProcessing
                         b = BasicDIP.MedianFilter(b, 3);
                         b = BasicDIP.MedianFilter(b, 3);
                         countCoinsSteps.Add(b);
-                        listBox1.Items.Add("Median Filter");
+                        listBox1.Items.Add("Multiple Median Filter");
                         break;
                     case 8:
                         countCoinsSteps.Add(BasicDIP.PixelCopy(countCoinsSteps[i - 1]));
@@ -397,49 +407,36 @@ namespace ImageProcessing
                         break;
                     case 9:
                         Bitmap prev = countCoinsSteps[i - 1];
-                        List<List<Point>> contours = ContourTracing.TraceContours(prev);
+                        Bitmap contourImage = (Bitmap)countCoinsSteps[0].Clone();
 
-                        Bitmap contourImage = new Bitmap(prev.Width, prev.Height);
+                        Tuple<List<List<Point>>, List<int>, List<double>> t = CoinCounter.CountCoins(ContourTracing.TraceContours(prev));
+                        coins = t.Item1;
+                        coinValues = t.Item2;
+                        coinSizes = t.Item3;
 
-                        // Analyze the contours
-                        int totalCoins = 0;
-                        List<double> coinSizes = new List<double>();
+                        listBox2.Items.Clear();
 
-                        using (Graphics g = Graphics.FromImage(contourImage))
+                        foreach (var q in coinSizes.Zip(coinValues))
                         {
-                            g.Clear(Color.Black);
-                            foreach (var contour in contours)
-                            {
-                                foreach (var point in contour)
-                                {
-                                    contourImage.SetPixel(point.X, point.Y, Color.Red);
-                                }
-
-                                double perimeter = CoinCounter.CalculatePerimeter(contour);
-                                double area = CoinCounter.CalculateArea(contour);
-
-                                if (perimeter == 0) continue; // Avoid division by zero
-
-                                double circularity = (4 * Math.PI * area) / (perimeter * perimeter);
-
-                                // Check if the contour qualifies as a coin
-                                if (circularity >= 0.85) // Adjust threshold as needed
-                                {
-                                    totalCoins++;
-                                    coinSizes.Add(area); // Store the size of the coin
-                                }
-                            }
-
+                            listBox2.Items.Add(q.First + " - " + (q.Second / 100.0));
                         }
 
-                        MessageBox.Show("" + contours.Count);
-                        MessageBox.Show("" + contours.ToArray());
+                        int valSum = coinValues.Sum();
+
+                        foreach (var contour in coins)
+                        {
+                            foreach (var point in contour)
+                            {
+                                contourImage.SetPixel(point.X, point.Y, Color.Red);
+                            }
+                        }
 
                         countCoinsSteps.Add(contourImage);
                         listBox1.Items.Add("Trace Contours");
 
                         // 64 Coins in Total
-                        label2.Text = totalCoins.ToString();
+                        label2.Text = coins.Count.ToString();
+                        label3.Text = valSum / 100 + " Peso and " + valSum % 100 + " Cents";
                         break;
                 }
             }
@@ -476,6 +473,21 @@ namespace ImageProcessing
         {
             currentStep = listBox1.SelectedIndex;
             reloadImages();
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pictureBox7.Image = ContourTracing.DrawContour((Bitmap)countCoinsSteps[MAX_STEPS - 1].Clone(), coins[listBox2.SelectedIndex]);
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            saveFileDialog2.ShowDialog();
+        }
+
+        private void saveFileDialog2_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            pictureBox7.Image.Save(saveFileDialog2.FileName + ".jpg");
         }
     }
 }

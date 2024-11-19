@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Net.NetworkInformation;
 
 public class ContourTracing
 {
-	public ContourTracing()
-	{
-	}
+    public ContourTracing()
+    {
+    }
 
     private static readonly Point[] Neighbors =
         {
@@ -29,7 +30,6 @@ public class ContourTracing
         {
             for (int x = 0; x < width; x++)
             {
-                // Start tracing if it's a white pixel and not yet visited
                 if (binaryImage.GetPixel(x, y).R == 255 && !visited[x, y])
                 {
                     List<Point> contour = TraceSingleContour(binaryImage, visited, x, y);
@@ -42,7 +42,7 @@ public class ContourTracing
         return contours;
     }
 
-    private static  List<Point> TraceSingleContour(Bitmap binaryImage, bool[,] visited, int startX, int startY)
+    private static List<Point> TraceSingleContour(Bitmap binaryImage, bool[,] visited, int startX, int startY)
     {
         List<Point> contour = new List<Point>();
         Point current = new Point(startX, startY);
@@ -65,7 +65,7 @@ public class ContourTracing
         return contour;
     }
 
-    private static  Point FindNextContourPoint(Bitmap binaryImage, Point current, Point prev)
+    private static Point FindNextContourPoint(Bitmap binaryImage, Point current, Point prev)
     {
         int width = binaryImage.Width;
         int height = binaryImage.Height;
@@ -88,5 +88,37 @@ public class ContourTracing
 
         return Point.Empty; // No next point found
     }
+
+    public static Bitmap DrawContour(Bitmap bitmap, List<Point> contour)
+    {
+        Bitmap resultBitmap = new Bitmap(bitmap);
+
+        int contourThickness = 3;
+
+        foreach (var point in contour)
+        {
+            resultBitmap.SetPixel(point.X, point.Y, Color.Green);
+
+            for (int dx = -contourThickness; dx <= contourThickness; dx++)
+            {
+                for (int dy = -contourThickness; dy <= contourThickness; dy++)
+                {
+                    if (dx == 0 && dy == 0)
+                        continue;
+
+                    int newX = point.X + dx;
+                    int newY = point.Y + dy;
+
+                    if (newX >= 0 && newX < bitmap.Width && newY >= 0 && newY < bitmap.Height)
+                    {
+                        resultBitmap.SetPixel(newX, newY, Color.Green);
+                    }
+                }
+            }
+        }
+
+        return resultBitmap;
+    }
+
 
 }
